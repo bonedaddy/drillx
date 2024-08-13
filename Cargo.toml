@@ -16,20 +16,29 @@ keywords = ["solana", "crypto", "mining"]
 sha3 = "0.10.8"
 bytemuck = { version = "1.16", features = ["derive"] }
 criterion = { version = "0.5", features = ["html_reports"] }
-equix = "0.1.4"
+equix = {version= "0.1.4", features = ["full", "experimental"]}
 serde = { version = "1.0", features = ["derive"] }
 solana-program = "^1.18"
 solana-program-test = "^1.18"
 solana-sdk = "^1.18"
 strum = { version = "0.26.2", features = ["derive"] }
-tokio = { version = "1.37.0", features = ["full"] }
+tokio = { version = "1.37.0", features = ["full", "parking_lot"] }
 
 [profile.release]
+opt-level = 3
 lto = "fat"
 codegen-units = 1
+incremental = false
+debug = false     # Disable debug info to reduce binary size
+panic = 'abort'   # Reduces the binary size further by not including unwinding information
+rpath = false
+overflow-checks = false
+[profile.release.build-override]
 opt-level = 3
+incremental = false
+codegen-units = 1
+debug = false     # Disable debug info to reduce binary size
+overflow-checks = false
 
-[profile.bench]
-lto = "fat"
-codegen-units = 1
-opt-level = 3
+[build]
+rustflags = ["-C", "target-cpu=native"]
